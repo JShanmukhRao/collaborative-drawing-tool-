@@ -7,4 +7,19 @@ import { Component } from '@angular/core';
 })
 export class LandingComponent {
 
+  canvasOptions =[
+    {
+      label: 'Create new canvas',
+
+    },
+    {
+      label: 'Open existing canvas',
+    }
+  ]
+  showOptions:boolean = false;
+
+
+  toggleOptions(){
+    this.showOptions = !this.showOptions;
+  }
 }
