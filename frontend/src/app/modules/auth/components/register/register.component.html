@@ -1,0 +1,49 @@
+<div class="main">
+    <div class="title">
+        <p>Register</p>
+    </div>
+
+    <form class="login-form " [formGroup]="registerForm" (ngSubmit)="register()">
+        <div class="form-group">
+            <input formControlName="email" type="text" placeholder="Email">
+            <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+                <div *ngIf="f['email'].hasError('email') && !f['email'].hasError('required')">
+                    Please enter a valid email address
+                </div>
+                <div *ngIf="f['email'].hasError('required')">
+                    Email is required
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input formControlName="password" type="password" placeholder="Password">
+            <div *ngIf="submitted && f['confirmPassword'].errors" class="invalid-feedback">
+               
+                <div *ngIf="f['password'].hasError('required')">
+                    password is required
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input formControlName="confirmPassword" type="password" placeholder="Confirm Password">
+            <div *ngIf="submitted && f['confirmPassword'].errors" class="invalid-feedback">
+               
+                <div *ngIf="f['confirmPassword'].hasError('required')">
+                    Confirm Password is required
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <button class="submit" type="submit">Register</button>
+        </div>
+
+        <div class="prompt-text">
+            <a [routerLink]="['/auth']">Already have account?</a>
+        </div>
+
+
+    </form>
+</div>

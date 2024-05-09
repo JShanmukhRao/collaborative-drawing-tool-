@@ -1,0 +1,33 @@
+version: '3.3'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"  # Adjust the port as needed
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"  # Adjust the port as needed
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/
+      - JWT_SECRET=secret
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"  # Adjust the port as needed
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

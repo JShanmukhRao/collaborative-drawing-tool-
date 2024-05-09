@@ -1,0 +1,27 @@
+<div class="main">
+    <div class="title">
+        <p>Login</p>
+    </div>
+
+    <form class="login-form " [formGroup]="loginForm" (ngSubmit)="login()">
+        <div>
+            <input class="un" formControlName="email" type="text" placeholder="Email">
+        </div>
+        <div>
+            <input class="pass" formControlName="password" type="password" placeholder="Password">
+        </div>
+
+        <div>
+            <button class="submit" type="submit">Login</button>
+        </div>
+
+        <!-- <div class="forgot-block">
+            <p class="prompt-text forgot">Forgot Password?</p>
+        </div> -->
+        <div class="prompt-text">
+            <a [routerLink]='getRegisterLink()'>Don't have an account</a>
+        </div>
+       
+
+    </form>
+</div>
