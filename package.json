@@ -1,0 +1,12 @@
+{
+  "name": "collaborative-drawing-app",
+  "version": "1.0.0",
+  "description": "Real time drawing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\""
+  },
+  "author": "",
+  "license": "ISC"
+}
