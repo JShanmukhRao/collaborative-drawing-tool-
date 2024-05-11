@@ -1,0 +1,14 @@
+
+.drawing_container{
+   padding: 50px 10px 0px 10px;
+    // display: flex;
+    height: 100vh;
+
+    .whiteboard{
+        // display: flex;
+        flex-grow: 1; 
+        width: 100%;
+        height: 100%;
+        // margin: auto;
+    }
+}

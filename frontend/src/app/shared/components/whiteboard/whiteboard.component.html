@@ -1,0 +1,18 @@
+<div class="whiteboard_container">
+    <div class="canvas"            
+            (mousedown)="onMouseDown($event)" 
+            (mousemove)="onMouseMove($event)" 
+            (mouseup)="onMouseUp($event)" 
+            (mouseleave)="onMouseLeave($event)">>
+        <canvas #canvas id="canvas" width="100%" height="100%"></canvas>
+    </div>
+    <div class="whiteboard_tools">
+        <input type="color" [(ngModel)]="selectedColor">
+        <div (click)="enableErase()">
+            Eraser
+        </div>
+        <!-- <button class="btn btn-primary" (click)="clearCanvas()">Clear</button>
+        <button class="btn btn-primary" (click)="undo()">Undo</button>
+        <button class="btn btn-primary" (click)="redo()">Redo</button> -->
+    </div>
+</div>  

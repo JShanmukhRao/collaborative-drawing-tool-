@@ -9,6 +9,10 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'draw',
+    loadChildren: () => import('./modules/draw/draw.module').then(m => m.DrawModule),
+  },
+  {
     path: 'auth',
     loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule),
   },
