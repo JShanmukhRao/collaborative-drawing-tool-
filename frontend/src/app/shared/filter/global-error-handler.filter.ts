@@ -6,7 +6,7 @@ export class GlobalErrorHandler implements ErrorHandler{
     }
     handleError(error: any) {
         console.error('Error from global error handler', error);
-        const message = error?.error?.error[0]?.message || "Something went wrong";
+        const message = error?.message || "Something went wrong";
         alert(message); 
     }
 }

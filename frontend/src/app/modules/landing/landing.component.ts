@@ -10,6 +10,7 @@ import { WhiteboardService } from 'src/app/shared/services/whiteboard.service';
 export class LandingComponent {
 
   constructor(private whiteboardService: WhiteboardService){}
+  whiteboardId: string = '';
 
   async createWhiteboard() {
     const randomNumber = Math.floor(Math.random() * 1000000);
@@ -20,5 +21,11 @@ export class LandingComponent {
       name: 'My Whiteboard',
       description: 'This is a test whiteboard'
     })
+  }
+
+  async joinWhiteboard() {
+    if(this.whiteboardId) {
+      this.whiteboardService.joinWhiteboard(this.whiteboardId);
+    }
   }
 }

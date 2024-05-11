@@ -32,4 +32,15 @@ export class WhiteboardService{
             this.router.navigate(['/draw', data['roomId']]);
        });
     }
+
+    joinWhiteboard(roomId: string){
+        const url = environment.apiUrl + `/whiteboard/${roomId}`;
+        return this.http.get(url).subscribe((response:any) => {
+            console.log("joinWhiteboard_response",response);
+            if(!response.data){
+                throw new Error('whiteboard not found');
+            }
+            this.router.navigate(['/draw', roomId]);
+        });
+    }
 }
