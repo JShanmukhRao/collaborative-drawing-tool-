@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { WhiteboardService } from 'src/app/shared/services/whiteboard.service';
+
 
 @Component({
   selector: 'app-landing',
@@ -7,19 +9,16 @@ import { Component } from '@angular/core';
 })
 export class LandingComponent {
 
-  canvasOptions =[
-    {
-      label: 'Create new canvas',
+  constructor(private whiteboardService: WhiteboardService){}
 
-    },
-    {
-      label: 'Open existing canvas',
-    }
-  ]
-  showOptions:boolean = false;
-
-
-  toggleOptions(){
-    this.showOptions = !this.showOptions;
+  async createWhiteboard() {
+    const randomNumber = Math.floor(Math.random() * 1000000);
+    const timestamp = new Date().getTime();
+    const roomId = randomNumber.toString() + timestamp.toString();
+    await this.whiteboardService.createWhiteboard({
+      roomId,
+      name: 'My Whiteboard',
+      description: 'This is a test whiteboard'
+    })
   }
 }

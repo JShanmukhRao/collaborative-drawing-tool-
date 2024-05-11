@@ -15,7 +15,10 @@ export class AuthenticationService{
     }
 
     public get currentUser(){
-        return localStorage.getItem('currentUser');
+        const currentUser = localStorage.getItem('currentUser');
+        if (currentUser) {
+            return JSON.parse(currentUser);
+        }
     }
 
     registerUser(registerUser: RegisterUser){

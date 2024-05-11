@@ -62,7 +62,7 @@ export class WhiteboardService {
     } catch (error) {
       throw error;
     }
-    return data;
+    return data[0];
   }
 
   async updateCanvas(updateCanvasDto: UpdateCanvasDto) {
