@@ -1,10 +1,11 @@
+import { Constants } from '@/constants';
 import { MongoRepository } from '@/shared/repository/mongo.repository';
 import { Injectable } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class UserRepository {
-  USER_COLLECTION = 'user';
+  USER_COLLECTION = Constants.USER_COLLECTION;
   constructor(private mongoRepo: MongoRepository) {}
 
   async insertOne(userData: any) {
@@ -37,7 +38,6 @@ export class UserRepository {
       return {
         ...result,
         id: result._id,
-        _id: undefined,
       };
     }
     return null;
@@ -51,7 +51,6 @@ export class UserRepository {
       return {
         ...result,
         id: result._id,
-        _id: undefined,
       };
     }
     return null;

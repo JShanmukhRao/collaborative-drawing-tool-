@@ -1,7 +1,8 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { RegisterUserDto } from '../auth/dto/auth.dto';
+import { RegisterUserDto } from '../../shared/dtos/auth.dto';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class UserService {
@@ -37,6 +38,17 @@ export class UserService {
     };
   }
 
+  async findUserById(id: string) {
+    return this.userRepository.findById(id);
+  }
+
+  async addWhiteboardToUser(user: any, whiteboardId: ObjectId) {
+    const updatedUser = await this.userRepository.updateOne(
+      { _id: user._id },
+      { $push: { whiteboards: whiteboardId } },
+    );
+    return updatedUser;
+  }
   async validateUser(email: string, password: string) {
     const user = await this.userRepository.findByEmail(email);
     if (!user) {

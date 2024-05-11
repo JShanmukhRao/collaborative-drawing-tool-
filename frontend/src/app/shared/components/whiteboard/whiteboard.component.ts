@@ -1,16 +1,21 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { WebSocketService } from '../../services/web-socket.service';
 
 @Component({
   selector: 'app-white-board',
   templateUrl: './whiteboard.component.html',
   styleUrls: ['./whiteboard.component.scss']
 })
-export class WhiteboardComponent {
+export class WhiteboardComponent implements OnInit, OnDestroy {
   @ViewChild('canvas', { static: true }) canvas!: ElementRef<HTMLCanvasElement>;
 
   isDrawing:boolean = false;
   selectedColor: string = 'black';
+  private timeoutId: any;
 
+  constructor(
+    private webSocketService: WebSocketService
+  ){}
   onMouseDown(event: MouseEvent): void {
     this.isDrawing = true;
     const ctx = this.canvas.nativeElement.getContext('2d');
@@ -22,7 +27,6 @@ export class WhiteboardComponent {
 
   }
   onMouseMove(event: MouseEvent): void {
-    console.log('mouse move', this.selectedColor, this.isDrawing);
     if(this.isDrawing){
       const ctx = this.canvas.nativeElement.getContext('2d');
       if(ctx){
@@ -32,7 +36,20 @@ export class WhiteboardComponent {
         ctx.lineCap = 'round';
         ctx.lineTo(event.offsetX, event.offsetY);
         ctx.stroke();
+
+        // Clear the previous timeout if it exists
+        if (this.timeoutId) {
+          clearTimeout(this.timeoutId);
+        }
+      
+        // Set a new timeout to send the data after 1 second
+        this.timeoutId = setTimeout(() => {
+          const dataUrl = this.canvas.nativeElement.toDataURL("image/png");
+          console.log('mouse move', dataUrl);
+          this.webSocketService.send('draw', dataUrl);
+        }, 500);
       }
+     
     }
   }
 
@@ -52,41 +69,37 @@ export class WhiteboardComponent {
 
   
   }
-  ngOnInit():void{
-
-    // connect to websocket
+  async ngOnInit(){
     const parent = this.canvas.nativeElement.parentElement;
+    const ctx = this.canvas.nativeElement.getContext('2d');
+
+    this.webSocketService.connect('ws://localhost:3000');
+    this.webSocketService.onEvent('draw').subscribe((dataUrl:any) => {
+  
+      console.log("WEBSOCKET_DATA", dataUrl)
+     
+      const img = new Image();
+      img.onload = () => {       
+        if(ctx)  ctx.drawImage(img, 0, 0);
+      };
+      img.src = dataUrl;
+
+      // When the image loads, draw it onto the canvas
+      
+    
+    });
+    // connect to websocket
 
    if(parent){
      this.canvas.nativeElement.width = parent.clientWidth;
      this.canvas.nativeElement.height = parent.clientHeight;
 
    }
-    const ctx = this.canvas.nativeElement.getContext('2d');
-    if (ctx !== null) {
-      ctx.font = '30px Arial';
-      ctx.fillStyle = 'black';
-
-      // Draw the text
-      ctx.fillText('Hello, world!', 10, 50);
-
-      // Draw a rectangle
-      ctx.fillRect(75, 75, 50, 50);
-
-      // Draw a line
-      ctx.beginPath();
-      ctx.moveTo(100, 150);
-      ctx.lineTo(200, 150);
-      ctx.stroke();
-
-      // Draw a circle
-      ctx.beginPath();
-      ctx.arc(100, 75, 50, 0, 2 * Math.PI);
-      ctx.stroke();
-    } else {
-      // Handle the case where ctx is null
-      console.error('2D context not supported');
-    }
+   
+  
   }
 
+  ngOnDestroy():void{
+    this.webSocketService.disconnect();
+  }
 }
