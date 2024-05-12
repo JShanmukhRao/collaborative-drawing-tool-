@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy, Input } from '@angular/core';
-import { WebSocketService } from '../../services/web-socket.service';
+import { WebSocketService } from '../../../../shared/services/web-socket.service';
 import { environment } from 'src/environment/environment';
 import { ActivatedRoute } from '@angular/router';
-import { Whiteboard } from '../../entities/whiteboard.entity';
-import { WhiteboardService } from '../../services/whiteboard.service';
+import { Whiteboard } from '../../../../shared/entities/whiteboard.entity';
+import { WhiteboardService } from '../../../../shared/services/whiteboard.service';
 import { Constants } from 'src/app/constants';
 import { Subscription } from 'rxjs';
-import { Color, Tool } from '../../entities/draw.entity';
+import { Color, Tool } from '../../../../shared/entities/draw.entity';
 
 @Component({
   selector: 'app-white-board',
@@ -64,7 +64,7 @@ export class WhiteboardComponent implements OnInit, OnDestroy {
         this.timeoutId = setTimeout(() => {
           const toDataUrl = this.canvas.nativeElement.toDataURL("image/png");
           console.log('mouse move', toDataUrl);
-          this.webSocketService.send(Constants.DRAW_EVENT, {roomId:this.roomId,toDataUrl});
+          this.webSocketService.send(Constants.DRAW_EVENT, { roomId: this.roomId, toDataUrl });
         }, 500);
       }
 
@@ -91,7 +91,7 @@ export class WhiteboardComponent implements OnInit, OnDestroy {
   }
 
   subscribeToDrawEvent(): void {
-   this.websocketOnEventSubscription = this.webSocketService.onEvent(Constants.DRAW_EVENT).subscribe((data: any) => {
+    this.websocketOnEventSubscription = this.webSocketService.onEvent(Constants.DRAW_EVENT).subscribe((data: any) => {
       const toDataUrl = data.toDataUrl;
       console.log('draw event', data);
       if (toDataUrl && this.canvasContext) {
@@ -113,7 +113,7 @@ export class WhiteboardComponent implements OnInit, OnDestroy {
   subscribeWhiteboardData(): void {
     this.whiteboardDataSubscription = this.whiteboardService.whiteboardData.subscribe((data: Whiteboard) => {
       this.whiteboardData = data;
-      console.log("Subscribed_data",data);
+      console.log("Subscribed_data", data);
       if (data.toDataUrl && this.canvasContext) {
         console.log("Subscribed_dataIN", data);
 
@@ -136,7 +136,7 @@ export class WhiteboardComponent implements OnInit, OnDestroy {
 
 
       // subscribe to the room
-      this.roomIdSubscription= this.route.params.subscribe(params => {
+      this.roomIdSubscription = this.route.params.subscribe(params => {
         this.roomId = params['roomId'];
         this.joinDrawRoom(this.roomId);
         console.log("roomId", params['roomId']);

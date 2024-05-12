@@ -1,11 +1,15 @@
 
 .drawing_tool_container{
-    position: fixed;
-    bottom: 0;
+        /* position: fixed; */
+    // bottom: 0;
     height: 60px;
-    width: 100%;
-    border: 1px solid #ccc;
+    /* width: 72%; */
+    margin: auto;
+    justify-content: center;
+
+    /* border: 1px solid #ccc; */
     display: flex;
+    flex-wrap: wrap;
     .active{
         transform: scale(1.3);
     }
@@ -36,6 +40,7 @@
                 height: 25px;   
                 transform: rotate(-90deg);
             }
+            margin: -11px;
             cursor: pointer;
         }
         .tool:hover{
@@ -43,5 +48,16 @@
             transform: scale(1.3);
             transition: transform 0.5;
         }
+    }
+
+    @media (max-width: 577px) {
+        .color_container{
+            max-width: 330px;
+        }
+
+        .tool_container{
+            margin-top: 40px;
+        }
+        
     }
 }
