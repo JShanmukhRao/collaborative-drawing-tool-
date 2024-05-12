@@ -68,8 +68,8 @@ export class WhiteboardService {
   async updateCanvas(updateCanvasDto: UpdateCanvasDto) {
     return await this.mongoRepo.updateOne(
       Constants.WHITEBOARD_COLLECTION,
-        { roomId:updateCanvasDto.roomId },
-        { $set: { dataToUrl: updateCanvasDto.canvasData } },
+      { roomId: updateCanvasDto.roomId },
+      { $set: { dataToUrl: updateCanvasDto.canvasData } },
     );
   }
 }

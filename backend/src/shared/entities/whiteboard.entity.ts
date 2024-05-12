@@ -1,5 +1,4 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { User } from './user.entity';
 import { ObjectId } from 'mongodb';
 
 export class Whiteboard {

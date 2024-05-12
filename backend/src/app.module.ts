@@ -39,7 +39,7 @@ import { UserWhiteboardModule } from './modules/user-whiteboard/user-whiteboard.
           reqId: 'X-Request-Id',
         },
         formatters: {
-          level: (label, number) => {
+          level: (label) => {
             return { level: label };
           },
         },

@@ -1,3 +1,4 @@
+import { DrawRoomPayload } from '@/shared/dtos/whiteboard.dto';
 import { Logger } from '@nestjs/common';
 import {
   OnGatewayConnection,
@@ -7,7 +8,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
@@ -36,10 +37,16 @@ export class WhiteboardGateway
     this.logger.log(`Cliend id:${client.id} disconnected`);
   }
 
+  @SubscribeMessage('joinDrawRoom')
+  handleJoinRoom(client: Socket, roomId: string): void {
+    client.join(roomId);
+    console.log(`Client id: ${client.id} joined room ${roomId}`);
+  }
+
   @SubscribeMessage('draw')
-  handleMessage(client: any, payload: any): string {
-    this.logger.log(`Client id: ${client.id} payload: ${payload}`);
-    client.broadcast.emit('draw', payload);
+  handleMessage(client: Socket, payload: DrawRoomPayload): DrawRoomPayload {
+    this.logger.log(`Client id: ${client.id} payload: ${payload.roomId}`);
+    client.broadcast.to(payload.roomId).emit('draw', payload);
     return payload;
   }
 }

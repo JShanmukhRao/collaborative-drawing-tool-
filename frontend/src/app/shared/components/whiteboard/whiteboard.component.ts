@@ -1,5 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { WebSocketService } from '../../services/web-socket.service';
+import { environment } from 'src/environment/environment';
+import { ActivatedRoute } from '@angular/router';
+import { Whiteboard } from '../../entities/whiteboard.entity';
+import { WhiteboardService } from '../../services/whiteboard.service';
+import { Constants } from 'src/app/constants';
 
 @Component({
   selector: 'app-white-board',
@@ -9,17 +14,22 @@ import { WebSocketService } from '../../services/web-socket.service';
 export class WhiteboardComponent implements OnInit, OnDestroy {
   @ViewChild('canvas', { static: true }) canvas!: ElementRef<HTMLCanvasElement>;
 
-  isDrawing:boolean = false;
+  isDrawing: boolean = false;
   selectedColor: string = 'black';
+  roomId: string = '';
+  whiteboardData!: Whiteboard;
+  canvasContext!: CanvasRenderingContext2D;
   private timeoutId: any;
 
   constructor(
-    private webSocketService: WebSocketService
-  ){}
+    private webSocketService: WebSocketService,
+    private whiteboardService: WhiteboardService,
+    private route: ActivatedRoute
+  ) { }
   onMouseDown(event: MouseEvent): void {
     this.isDrawing = true;
     const ctx = this.canvas.nativeElement.getContext('2d');
-    if(ctx){
+    if (ctx) {
       ctx.beginPath();
       ctx.moveTo(event.offsetX, event.offsetY);
     }
@@ -27,9 +37,9 @@ export class WhiteboardComponent implements OnInit, OnDestroy {
 
   }
   onMouseMove(event: MouseEvent): void {
-    if(this.isDrawing){
+    if (this.isDrawing) {
       const ctx = this.canvas.nativeElement.getContext('2d');
-      if(ctx){
+      if (ctx) {
         // ctx.beginPath();
         ctx.strokeStyle = this.selectedColor;
         ctx.lineWidth = 5;
@@ -41,21 +51,21 @@ export class WhiteboardComponent implements OnInit, OnDestroy {
         if (this.timeoutId) {
           clearTimeout(this.timeoutId);
         }
-      
+
         // Set a new timeout to send the data after 1 second
         this.timeoutId = setTimeout(() => {
-          const dataUrl = this.canvas.nativeElement.toDataURL("image/png");
-          console.log('mouse move', dataUrl);
-          this.webSocketService.send('draw', dataUrl);
+          const toDataUrl = this.canvas.nativeElement.toDataURL("image/png");
+          console.log('mouse move', toDataUrl);
+          this.webSocketService.send(Constants.DRAW_EVENT, {roomId:this.roomId,toDataUrl});
         }, 500);
       }
-     
+
     }
   }
 
-  enableErase():void{
+  enableErase(): void {
     this.selectedColor = 'white';
-  
+
   }
   onMouseUp(event: MouseEvent): void {
     this.isDrawing = false;
@@ -66,40 +76,68 @@ export class WhiteboardComponent implements OnInit, OnDestroy {
   onMouseLeave(event: MouseEvent): void {
     this.isDrawing = false;
     console.log('mouse leave', event, this.isDrawing);
-
-  
   }
-  async ngOnInit(){
-    const parent = this.canvas.nativeElement.parentElement;
-    const ctx = this.canvas.nativeElement.getContext('2d');
 
-    this.webSocketService.connect('ws://localhost:3000');
-    this.webSocketService.onEvent('draw').subscribe((dataUrl:any) => {
-  
-      console.log("WEBSOCKET_DATA", dataUrl)
-     
-      const img = new Image();
-      img.onload = () => {       
-        if(ctx)  ctx.drawImage(img, 0, 0);
-      };
-      img.src = dataUrl;
+  joinDrawRoom(roomId: string): void {
+    this.webSocketService.send(Constants.JOIN_DRAW_ROOM, roomId);
+  }
 
-      // When the image loads, draw it onto the canvas
-      
-    
+  subscribeToDrawEvent(): void {
+    this.webSocketService.onEvent(Constants.DRAW_EVENT).subscribe((data: any) => {
+      const toDataUrl = data.toDataUrl;
+      console.log('draw event', data);
+      if (toDataUrl && this.canvasContext) {
+        const img = new Image();
+        img.onload = () => {
+          this.canvasContext.drawImage(img, 0, 0);
+        };
+        img.src = toDataUrl;
+      }
+
     });
-    // connect to websocket
-
-   if(parent){
-     this.canvas.nativeElement.width = parent.clientWidth;
-     this.canvas.nativeElement.height = parent.clientHeight;
-
-   }
-   
-  
   }
 
-  ngOnDestroy():void{
+  connectToWebSocket(): void {
+    this.webSocketService.connect(environment.wsUrl);
+    this.subscribeToDrawEvent();
+  }
+
+  fetchWhiteboardData(): void {
+    this.whiteboardService.fetchWhiteboardData.subscribe((data: Whiteboard) => {
+      this.whiteboardData = data;
+      console.log(data);
+      if (data.totoDataUrl && this.canvasContext) {
+        const img = new Image();
+        img.onload = () => {
+          this.canvasContext.drawImage(img, 0, 0);
+        };
+        img.src = data.totoDataUrl;
+      }
+    })
+  }
+  async ngOnInit() {
+    // connect to websocket
+    const ctx = this.canvas.nativeElement.getContext('2d');
+    if (ctx) {
+      this.canvasContext = ctx;
+      this.connectToWebSocket();
+
+      // subscribe to the room
+      this.route.params.subscribe(params => {
+        this.roomId = params['roomId'];
+        this.joinDrawRoom(this.roomId);
+        console.log("roomId", params['roomId']);
+
+      });
+    }
+
+    // fetch latest canvas data
+
+
+
+  }
+
+  ngOnDestroy(): void {
     this.webSocketService.disconnect();
   }
 }

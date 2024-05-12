@@ -9,6 +9,4 @@ export class UserWhiteboardController {
   createWhiteboard(@Body() createWhiteboardDto: CreateWhiteboardDto) {
     return this.userWhiteboardService.createWhiteboard(createWhiteboardDto);
   }
-
-  
 }
