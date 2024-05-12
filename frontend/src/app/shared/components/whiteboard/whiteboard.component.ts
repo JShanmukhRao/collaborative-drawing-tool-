@@ -102,8 +102,8 @@ export class WhiteboardComponent implements OnInit, OnDestroy {
     this.subscribeToDrawEvent();
   }
 
-  fetchWhiteboardData(): void {
-    this.whiteboardService.fetchWhiteboardData.subscribe((data: Whiteboard) => {
+  subscribeWhiteboardData(): void {
+    this.whiteboardService.whiteboardData.subscribe((data: Whiteboard) => {
       this.whiteboardData = data;
       console.log(data);
       if (data.totoDataUrl && this.canvasContext) {
@@ -117,6 +117,7 @@ export class WhiteboardComponent implements OnInit, OnDestroy {
   }
   async ngOnInit() {
     // connect to websocket
+    this.subscribeWhiteboardData();
     const ctx = this.canvas.nativeElement.getContext('2d');
     if (ctx) {
       this.canvasContext = ctx;

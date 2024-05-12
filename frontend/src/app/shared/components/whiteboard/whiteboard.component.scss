@@ -10,9 +10,15 @@
 
     .canvas{
         width: 100%;
-        border: 1px solid $primary-color;
-        border-radius: 5px;
         background-color: $white-color;
         cursor: crosshair;
+        overflow: auto; // Add this line
+        position: relative; // Add this line if your canvas is positioned absolutely
+           border: 1px solid $primary-color; 
+
+        canvas{
+           box-sizing: border-box;
+           position: absolute; // Add this line
+        }
     }
 }

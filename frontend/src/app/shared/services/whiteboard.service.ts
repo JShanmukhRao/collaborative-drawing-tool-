@@ -22,14 +22,14 @@ export class WhiteboardService {
         private http: HttpClient
     ) { }
 
-    private whiteboardData: BehaviorSubject<Whiteboard> = new BehaviorSubject<Whiteboard>({
+    private _whiteboardData: BehaviorSubject<Whiteboard> = new BehaviorSubject<Whiteboard>({
         _id: '',
         roomId: '',
         name: '',
         totoDataUrl: '',
     });
-    public get fetchWhiteboardData() {
-        return this.whiteboardData.asObservable();
+    public get whiteboardData() {
+        return this._whiteboardData.asObservable();
     }
     createWhiteboard(data: CreateWhiteboard) {
         const url = environment.apiUrl + '/whiteboard';
@@ -51,8 +51,19 @@ export class WhiteboardService {
             if (!response.data) {
                 throw new Error('whiteboard not found');
             }
-            this.whiteboardData.next(response.data);
+            this._whiteboardData.next(response.data);
             this.router.navigate(['/draw', roomId]);
+        });
+    }
+
+    fetchWhiteboardWithRoomId(roomId: string) {
+        const url = environment.apiUrl + `/whiteboard/${roomId}`;
+        return this.http.get(url).subscribe((response: any) => {
+            console.log("fetchWhiteboardWithRoomId_response", response);
+            if (!response.data) {
+                throw new Error('whiteboard not found');
+            }
+            this._whiteboardData.next(response.data);
         });
     }
 
