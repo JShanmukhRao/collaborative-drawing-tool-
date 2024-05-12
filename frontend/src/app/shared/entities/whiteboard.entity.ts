@@ -13,6 +13,6 @@ export interface Whiteboard {
     roomId: string;
     name: string;
     description?: string;
-    totoDataUrl?: string;
+    toDataUrl?: string;
     createdBy?: User;
 }

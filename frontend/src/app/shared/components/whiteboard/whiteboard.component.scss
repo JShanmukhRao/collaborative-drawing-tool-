@@ -1,11 +1,14 @@
 @import'../../../../assets/styles/variable.scss';
 
 .whiteboard_container{
-    background-color: $whiteboard-bg;
+    // background-color: $whiteboard-bg;
     display: flex;
     width: 100%;
-    padding: 40px 50px 100px 50px;
-    height: 100%;
+    // padding: 40px 50px 100px 50px;
+    height: 85%;
+    max-width: 1700px;
+    max-height: 700px;
+    margin: auto;
     // box-sizing: border-box;
 
     .canvas{
@@ -14,11 +17,11 @@
         cursor: crosshair;
         overflow: auto; // Add this line
         position: relative; // Add this line if your canvas is positioned absolutely
-           border: 1px solid $primary-color; 
 
         canvas{
+            border: 1px solid $primary-color; 
            box-sizing: border-box;
-           position: absolute; // Add this line
+        //    position: absolute; // Add this line
         }
     }
 }

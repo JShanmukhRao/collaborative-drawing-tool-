@@ -12,11 +12,6 @@ export class CreateWhiteboardDto extends PickType(Whiteboard, [
 }
 
 export class UpdateCanvasDto extends PickType(Whiteboard, [
-  'canvasData',
+  'toDataUrl',
   'roomId',
-]) { }
-
-export class DrawRoomPayload {
-  roomId: string;
-  toDataUrl: string;
-}
+]) {}

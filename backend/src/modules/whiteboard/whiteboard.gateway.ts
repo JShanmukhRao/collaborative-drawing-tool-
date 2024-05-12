@@ -1,4 +1,4 @@
-import { DrawRoomPayload } from '@/shared/dtos/whiteboard.dto';
+import { UpdateCanvasDto } from '@/shared/dtos/whiteboard.dto';
 import { Logger } from '@nestjs/common';
 import {
   OnGatewayConnection,
@@ -9,6 +9,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { WhiteboardService } from './whiteboard.service';
 
 @WebSocketGateway({
   cors: {
@@ -20,6 +21,7 @@ export class WhiteboardGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   private readonly logger = new Logger(WhiteboardGateway.name);
+  constructor(private whiteboardService: WhiteboardService){}
   @WebSocketServer() io: Server;
 
   afterInit() {
@@ -44,8 +46,10 @@ export class WhiteboardGateway
   }
 
   @SubscribeMessage('draw')
-  handleMessage(client: Socket, payload: DrawRoomPayload): DrawRoomPayload {
+  async handleMessage(client: Socket, payload: UpdateCanvasDto) {
+    await this.whiteboardService.updateCanvas(payload);
     this.logger.log(`Client id: ${client.id} payload: ${payload.roomId}`);
+
     client.broadcast.to(payload.roomId).emit('draw', payload);
     return payload;
   }

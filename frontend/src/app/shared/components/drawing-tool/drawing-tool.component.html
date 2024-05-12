@@ -1,0 +1,17 @@
+<div class="drawing_tool_container">
+    <div class="color_container">
+        <div *ngFor = "let color of colors">
+            <div class="color" [ngClass]="{active: selectedColor.value == color.value}" [style.background-color]="color" (click)="changeColor(color)"></div>
+        </div>
+    </div>
+    <div class="tool_container">
+        <div *ngFor="let tool of tools">
+            <div class="tool"
+                [ngClass]="{active: selectedTool.value == tool.value}"
+                (click)="changeTool(tool)">
+                <img src={{tool.icon}}>
+            </div>
+        </div>
+    </div>
+    
+</div>  

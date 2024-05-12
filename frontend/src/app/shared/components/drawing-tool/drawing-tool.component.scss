@@ -1,0 +1,47 @@
+
+.drawing_tool_container{
+    position: fixed;
+    bottom: 0;
+    height: 60px;
+    width: 100%;
+    border: 1px solid #ccc;
+    display: flex;
+    .active{
+        transform: scale(1.3);
+    }
+    .color_container{
+        display: flex;
+        max-width: 300px;
+            overflow: overlay;
+
+        .color{
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        .color:hover{
+            // border: 2px solid #000;
+            transform: scale(1.3);
+            transition: transform 0.5;
+        }
+    }
+
+    .tool_container{
+        display: flex;
+        .tool{
+            img{
+                width: 66px;
+                height: 25px;   
+                transform: rotate(-90deg);
+            }
+            cursor: pointer;
+        }
+        .tool:hover{
+            // border: 2px solid #000;
+            transform: scale(1.3);
+            transition: transform 0.5;
+        }
+    }
+}

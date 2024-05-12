@@ -1,5 +1,19 @@
 <div class="drawing_container">
     <div class="whiteboard">
-        <app-white-board></app-white-board>
+        <app-white-board
+            [selectedColor]="selectedColor"
+            [selectedTool]="selectedTool"
+        ></app-white-board>
+    </div>
+    <div class="action_itema">
+        <app-drawing-tool
+            [colors]="colors"
+            [tools]="tools"
+            [selectedColor]="selectedColor"
+            [selectedTool]="selectedTool"
+            [selectedEraser]=false
+            (changeColorEvent)="changeColor($event)"
+            (changeToolEvent)="changeTool($event)"
+        ></app-drawing-tool>
     </div>
 </div>

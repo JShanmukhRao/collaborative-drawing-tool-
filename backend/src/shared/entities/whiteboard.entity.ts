@@ -13,7 +13,7 @@ export class Whiteboard {
   description = '';
 
   @IsString()
-  canvasData: string;
+  toDataUrl: string;
 
   // @ManyToOne(() => User)
   createdBy: ObjectId;

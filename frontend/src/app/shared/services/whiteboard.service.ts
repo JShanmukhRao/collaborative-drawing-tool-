@@ -26,7 +26,7 @@ export class WhiteboardService {
         _id: '',
         roomId: '',
         name: '',
-        totoDataUrl: '',
+        toDataUrl: '',
     });
     public get whiteboardData() {
         return this._whiteboardData.asObservable();

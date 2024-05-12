@@ -1,9 +1,9 @@
 
 .drawing_container{
-   padding: 50px 10px 0px 10px;
+//    padding: 50px 10px 0px 10px;
     // display: flex;
-    height: 100vh;
-
+    height: 100%;
+    position: relative;
     .whiteboard{
         // display: flex;
         flex-grow: 1; 

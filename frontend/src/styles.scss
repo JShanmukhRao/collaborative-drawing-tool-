@@ -9,3 +9,21 @@ body {
 *::after {
     box-sizing: border-box;
 }
+
+/* This applies to the whole page */
+::-webkit-scrollbar {
+    width: 5px; /* width of the entire scrollbar */
+    height:5px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; /* color of the tracking area */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888; /* color of the scroll thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555; /* color of the scroll thumb when hovering */
+}

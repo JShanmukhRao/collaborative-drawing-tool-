@@ -1,10 +1,12 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy, Input } from '@angular/core';
 import { WebSocketService } from '../../services/web-socket.service';
 import { environment } from 'src/environment/environment';
 import { ActivatedRoute } from '@angular/router';
 import { Whiteboard } from '../../entities/whiteboard.entity';
 import { WhiteboardService } from '../../services/whiteboard.service';
 import { Constants } from 'src/app/constants';
+import { Subscription } from 'rxjs';
+import { Color, Tool } from '../../entities/draw.entity';
 
 @Component({
   selector: 'app-white-board',
@@ -14,11 +16,17 @@ import { Constants } from 'src/app/constants';
 export class WhiteboardComponent implements OnInit, OnDestroy {
   @ViewChild('canvas', { static: true }) canvas!: ElementRef<HTMLCanvasElement>;
 
+  @Input() selectedColor: Color = { name: 'black', value: 'black' };
+  @Input() selectedTool: Tool = { name: 'pencil', value: 3, icon: 'assets/icons/pencil.svg' };
   isDrawing: boolean = false;
-  selectedColor: string = 'black';
+  // selectedColor: string = 'black';
   roomId: string = '';
   whiteboardData!: Whiteboard;
   canvasContext!: CanvasRenderingContext2D;
+  whiteboardDataSubscription!: Subscription;
+  websocketOnEventSubscription!: Subscription;
+  roomIdSubscription!: Subscription;
+
   private timeoutId: any;
 
   constructor(
@@ -41,8 +49,8 @@ export class WhiteboardComponent implements OnInit, OnDestroy {
       const ctx = this.canvas.nativeElement.getContext('2d');
       if (ctx) {
         // ctx.beginPath();
-        ctx.strokeStyle = this.selectedColor;
-        ctx.lineWidth = 5;
+        ctx.strokeStyle = this.selectedTool.color?.value || this.selectedColor.value;
+        ctx.lineWidth = this.selectedTool.value;
         ctx.lineCap = 'round';
         ctx.lineTo(event.offsetX, event.offsetY);
         ctx.stroke();
@@ -63,10 +71,10 @@ export class WhiteboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  enableErase(): void {
-    this.selectedColor = 'white';
+  // enableErase(): void {
+  //   this.selectedColor = 'white';
 
-  }
+  // }
   onMouseUp(event: MouseEvent): void {
     this.isDrawing = false;
     console.log('mouse up', event, this.isDrawing);
@@ -83,7 +91,7 @@ export class WhiteboardComponent implements OnInit, OnDestroy {
   }
 
   subscribeToDrawEvent(): void {
-    this.webSocketService.onEvent(Constants.DRAW_EVENT).subscribe((data: any) => {
+   this.websocketOnEventSubscription = this.webSocketService.onEvent(Constants.DRAW_EVENT).subscribe((data: any) => {
       const toDataUrl = data.toDataUrl;
       console.log('draw event', data);
       if (toDataUrl && this.canvasContext) {
@@ -103,28 +111,32 @@ export class WhiteboardComponent implements OnInit, OnDestroy {
   }
 
   subscribeWhiteboardData(): void {
-    this.whiteboardService.whiteboardData.subscribe((data: Whiteboard) => {
+    this.whiteboardDataSubscription = this.whiteboardService.whiteboardData.subscribe((data: Whiteboard) => {
       this.whiteboardData = data;
-      console.log(data);
-      if (data.totoDataUrl && this.canvasContext) {
+      console.log("Subscribed_data",data);
+      if (data.toDataUrl && this.canvasContext) {
+        console.log("Subscribed_dataIN", data);
+
         const img = new Image();
         img.onload = () => {
+          console.log("Subscribed_dataINOnimg", data);
           this.canvasContext.drawImage(img, 0, 0);
         };
-        img.src = data.totoDataUrl;
+        img.src = data.toDataUrl;
       }
     })
   }
   async ngOnInit() {
     // connect to websocket
-    this.subscribeWhiteboardData();
     const ctx = this.canvas.nativeElement.getContext('2d');
     if (ctx) {
       this.canvasContext = ctx;
       this.connectToWebSocket();
+      this.subscribeWhiteboardData();
+
 
       // subscribe to the room
-      this.route.params.subscribe(params => {
+      this.roomIdSubscription= this.route.params.subscribe(params => {
         this.roomId = params['roomId'];
         this.joinDrawRoom(this.roomId);
         console.log("roomId", params['roomId']);
@@ -140,5 +152,8 @@ export class WhiteboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.webSocketService.disconnect();
+    this.whiteboardDataSubscription.unsubscribe();
+    this.websocketOnEventSubscription.unsubscribe();
+    this.roomIdSubscription.unsubscribe();
   }
 }

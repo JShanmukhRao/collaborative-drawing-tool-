@@ -1,6 +1,21 @@
+@import '../assets/styles/variable.scss';
 body {
     margin: 0px !important;
     /* Add your new styles here */
     background-color: #f0f0f0;
     font-family: Arial, sans-serif;
+}
+.app_container{
+    width: 100%;
+    height: 100%;
+    .temp{
+        height:$header-height;
+    }
+    .app_placeholder{
+        padding-left: $padding-left;
+        padding-right: $padding-right;
+        // height: calc(100% - #{$header-height});
+        // margin-top: $header-height;
+    }
+
 }

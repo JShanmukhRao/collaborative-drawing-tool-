@@ -50,6 +50,7 @@ export class WhiteboardService {
             _id: 1, // Include all fields from the main object
             roomId: 1,
             name: 1,
+            toDataUrl: 1,
             description: 1,
             createdAt: 1,
             updatedAt: 1,
@@ -69,7 +70,7 @@ export class WhiteboardService {
     return await this.mongoRepo.updateOne(
       Constants.WHITEBOARD_COLLECTION,
       { roomId: updateCanvasDto.roomId },
-      { $set: { dataToUrl: updateCanvasDto.canvasData } },
+      { $set: { toDataUrl: updateCanvasDto.toDataUrl } },
     );
   }
 }
