@@ -63,7 +63,7 @@ export class WhiteboardComponent implements OnInit, OnDestroy {
         // Set a new timeout to send the data after 1 second
         this.timeoutId = setTimeout(() => {
           const toDataUrl = this.canvas.nativeElement.toDataURL("image/png");
-          console.log('mouse move', toDataUrl);
+          // console.log('mouse move', toDataUrl);
           this.webSocketService.send(Constants.DRAW_EVENT, { roomId: this.roomId, toDataUrl });
         }, 500);
       }
@@ -93,8 +93,13 @@ export class WhiteboardComponent implements OnInit, OnDestroy {
   subscribeToDrawEvent(): void {
     this.websocketOnEventSubscription = this.webSocketService.onEvent(Constants.DRAW_EVENT).subscribe((data: any) => {
       const toDataUrl = data.toDataUrl;
-      console.log('draw event', data);
       if (toDataUrl && this.canvasContext) {
+        var dataSizeInBytes = toDataUrl.length;
+
+        // Convert bytes to kilobytes
+        var dataSizeInKB = dataSizeInBytes / 1024;
+
+        console.log('Size of data URL:', dataSizeInKB.toFixed(2), 'KB');
         const img = new Image();
         img.onload = () => {
           this.canvasContext.drawImage(img, 0, 0);

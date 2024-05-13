@@ -10,6 +10,6 @@ export class AppComponent implements OnInit {
   constructor(private router: Router) { }
   title = 'Drawing';
   ngOnInit(): void {
-    // this.router.navigate(['/']);
+    this.router.navigate(['/']);
   }
 }

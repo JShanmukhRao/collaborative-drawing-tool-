@@ -1,24 +1,26 @@
-import { Injectable } from "@angular/core";
+import { Injectable, OnInit } from "@angular/core";
 import { LoginUser, RegisterUser } from "../dto/auth.dto";
 import { environment } from "src/environment/environment";
 import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject, map } from "rxjs";
+import { Router } from "@angular/router";
 
 @Injectable({
     providedIn: 'root'
 })
-export class AuthenticationService{
+export class AuthenticationService implements OnInit{
 
-    // private currentUserSubject: BehaviorSubject<any>;
-    constructor(private http: HttpClient){
-        // this.currentUserSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('currentUser')));
+    private currentUserSubject: BehaviorSubject<any>= new BehaviorSubject<any>(null);
+    constructor(private http: HttpClient,private router: Router){
+        
     }
 
     public get currentUser(){
-        const currentUser = localStorage.getItem('currentUser');
-        if (currentUser) {
-            return JSON.parse(currentUser);
-        }
+        const user = localStorage.getItem('currentUser');
+        if(user)
+        this.currentUserSubject.next(JSON.parse(user));
+        return this.currentUserSubject.asObservable();
+        
     }
 
     registerUser(registerUser: RegisterUser){
@@ -29,6 +31,8 @@ export class AuthenticationService{
 
     updateUserInLocalStorage(user: any){
         localStorage.setItem('currentUser', JSON.stringify(user));
+        console.log("user", user);
+        this.currentUserSubject.next(user);
     }
 
     loginUser(loginUser: LoginUser){
@@ -42,15 +46,26 @@ export class AuthenticationService{
                 // assigning user values
                 const user = {
                     id: userTokenData.id,
+                    name: userTokenData.name,
                     email: userTokenData.email,
-                    firstName: userTokenData.firstName,
-                    lastName: userTokenData.lastName,
-                    healthcare: userTokenData.healthcare,
-                    token: userData.token,
+                    token: userData?.data.token,
                 };
 
                 this.updateUserInLocalStorage(user);
                 return user;
             }));
+    }
+
+    logout(){
+        this.updateUserInLocalStorage(null);
+        this.router.navigate(['/auth']);
+    }
+
+    ngOnInit(): void {
+        const user = localStorage.getItem('currentUser');
+        console.log("AuthenticationService#ngOnInit", user)
+        if (user) {
+            this.currentUserSubject.next(JSON.parse(user));
+        }
     }
 }

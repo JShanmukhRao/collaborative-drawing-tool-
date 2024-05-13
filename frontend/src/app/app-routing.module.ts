@@ -11,6 +11,7 @@ const routes: Routes = [
   {
     path: 'draw',
     loadChildren: () => import('./modules/draw/draw.module').then(m => m.DrawModule),
+    canActivate: [AuthGuard],
   },
   {
     path: 'auth',

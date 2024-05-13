@@ -1,9 +1,18 @@
 <div class="header_container">
-    <div class="logo">
+    <a class="logo" (click)="redirectHome()">
         
         <img src="assets/images/logo.png"  alt="logo"><span>Draw</span>
-    </div>
-    <div class="action">
-        <button class="btn btn-primary" >Whiteboard</button>
+    </a>
+    <div class="action" *ngIf="currentUser">
+        <div class="user_icon" (click)="toggleActionBox()">
+            <img src="assets/icons/user.svg" alt="">
+        </div>
+
+        <div class="action_box" *ngIf="showActionBox">
+            <div class="action_item" (click)="logout()">
+                <img src="assets/icons/logout.svg" alt="">
+                <span>Logout</span>
+            </div>
+        </div>
     </div>
 </div>

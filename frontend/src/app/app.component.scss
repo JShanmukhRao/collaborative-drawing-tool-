@@ -12,6 +12,7 @@ body {
         height:$header-height;
     }
     .app_placeholder{
+        // height: calc(100vh - #{$header-height});
         padding-left: $padding-left;
         padding-right: $padding-right;
         // height: calc(100% - #{$header-height});

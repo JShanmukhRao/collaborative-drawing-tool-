@@ -6,11 +6,17 @@
         z-index: 0;
         height: 100%;
         width: 100%;
-        background: url('/assets/images/home_bg.png');
+        margin-top: 100px;
+        // background: url('/assets/images/home_bg.png');
         animation: moveRight 60s linear infinite;
         display: flex;
         justify-content: center;
         align-items: center;
+        .content{
+            display: flex;
+            align-items: end;
+            gap: 30px;
+        }
     }
     @keyframes moveRight {
         0% {

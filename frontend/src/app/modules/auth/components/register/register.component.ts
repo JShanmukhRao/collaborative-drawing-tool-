@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators, FormControl, FormGroupDirective, Ng
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { first } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -14,14 +15,22 @@ export class RegisterComponent implements OnInit {
 
   registerForm: FormGroup;
   submitted: boolean = false;
+  currentUserSubscription!: Subscription;
+
+
   constructor(private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private router: Router) {
-    if (this.authenticationService.currentUser) {
-      this.router.navigate(['/']);
-    }
+
+    this.currentUserSubscription = this.authenticationService.currentUser.subscribe((user) => {
+      if (user) {
+        this.router.navigate(['/']);
+      }
+    });
+
     this.registerForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
+      name: ['', Validators.required],
       password: ['', Validators.required],
       confirmPassword: ['', Validators.required]
     });
@@ -42,6 +51,9 @@ export class RegisterComponent implements OnInit {
     });
   }
   ngOnInit(): void {
-
+   
+  }
+  ngOnDestroy() {
+    this.currentUserSubscription.unsubscribe();
   }
 }

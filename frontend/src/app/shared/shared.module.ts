@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { WhiteboardComponent } from '../modules/draw/components/whiteboard/whiteboard.component';
 import { HeaderComponent } from './components/header/header.component';
 import { DrawingToolComponent } from '../modules/draw/components/drawing-tool/drawing-tool.component';
+import { AuthGuard } from "./guard/auth.guard";
 
 @NgModule({
 
@@ -14,6 +15,7 @@ import { DrawingToolComponent } from '../modules/draw/components/drawing-tool/dr
     WhiteboardComponent,
     HeaderComponent,
     DrawingToolComponent,
-  ]
+  ],
+  providers: [AuthGuard]
 })
 export class SharedModule { }
